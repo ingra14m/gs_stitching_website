@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="Towards Realistic Example-based Modeling via 3D Gaussian Stitching">
+    <meta name="keywords" content="3D Composition, 3D Model Synthesis, 3D Gaussian Stitching">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Towards Realistic Example-based Modeling via 3D Gaussian Stitching</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="./static/css/bootstrap-4.4.1.css">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-PYVRSFMDRL');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro|Jost"
+          rel="stylesheet">
+
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+
+    <link rel="stylesheet" href="./static/css/dics.original.css">
+    <script src="./static/js/event_handler.js"></script>
+    <script src="./static/js/dics.original.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+            <a class="navbar-item" href="https://ingra14m.github.io/Deformable-3D-Gaussians.github.io/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    Related Research
+                </a>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/"
+                       target="_blank">
+                        3D Gaussian Splatting
+                    </a>
+                    <a class="navbar-item" href="https://sites.google.com/view/seamlessnerf" target="_blank">
+                        Seamless-NeRF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 publication-title" style="margin-bottom: 0"><span>Seamless-Gaussian:</span>
+                    </h1>
+                    <h2 class="title is-2 publication-title" style="margin-top: 0; margin-bottom: 0">Towards Realistic
+                        Example-based Modeling via <br> 3D Gaussian Stitching</h2>
+
+                    <h3 style="color:#5a6268;" class="title is-3">Arxiv 2024 </h3>
+
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block">
+                          <a href="https://github.com/gs-learner" target="_blank">Xinyu Gao</a><sup>1*</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block">
+                          <a href="https://ingra14m.github.io/" target="_blank">Ziyi Yang</a><sup>1*</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block">
+                          <a href="https://s2.hk/" target="_blank">Bingchen Gong</a><sup>2*</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block">
+                          <a href="https://gaplab.cuhk.edu.cn/"
+                             target="_blank">Xiaoguang Han</a><sup>3&Dagger;</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block">
+                          <a href="https://sp-young.github.io/" target="_blank">Sipeng Yang</a><sup>1</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <!--                        <br>-->
+                        <span class="author-block">
+                          <a href="http://www.cad.zju.edu.cn/home/jin/"
+                             target="_blank">Xiaogang Jin</a><sup>1&Dagger;</sup>
+                        </span>
+                    </div>
+
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>1</sup>Zhejiang University</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block"><sup>2</sup>The Chinese University of Hong Kong</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block"><sup>3</sup>The Chinese University of Hong Kong (Shenzhen)</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <br>
+                        <span class="author-block"><sup>*</sup> Equal Contribution</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="author-block"><sup>&Dagger;</sup> Corresponding Authors </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+                            <!-- PDF Link. -->
+                            <span class="link-block">
+                                <a href="file/paper-full.pdf"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                  <span class="icon">
+                                      <i class="fas fa-file-pdf"></i>
+                                  </span>
+                                  <span>Paper - 90MB</span>
+                                </a>
+                            </span>
+
+                            <!-- Arxiv Link. -->
+                            <span class="link-block">
+                                <a href="https://arxiv.org/abs/2402.15870"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                  <span class="icon">
+                                      <i class="ai ai-arxiv"></i>
+                                  </span>
+                                  <span>Arxiv - 50MB</span>
+                                </a>
+                            </span>
+
+                            <!-- Code Link. -->
+                            <span class="link-block">
+                                <a href="https://github.com/ingra14m/Spec-Gaussian"
+                                   class="external-link button is-normal is-rounded is-dark disabled">
+                                  <span class="icon">
+                                      <i class="fab fa-github"></i>
+                                  </span>
+                                  <span>Code</span>
+                                </a>
+                            </span>
+
+                            <!-- Dataset Link. -->
+                            <span class="link-block">
+                                <a href=""
+                                   class="external-link button is-normal is-rounded is-dark">
+                                  <span class="icon">
+                                      <i class="far fa-images"></i>
+                                  </span>
+                                  <span>Anisotropic Dataset (Comming Soon...)</span>
+                                </a>
+                            </span>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Results on the NeRF and NSVF Synthetic Dataset</h3>
+            </div>
+
+            <div id="results-carousel" class="carousel results-carousel">
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/blender/lego-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <!--                <div class="item item-steve">-->
+                <!--                    <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">-->
+                <!--                        <source src="video/blender/cd-compare.mp4"-->
+                <!--                                type="video/mp4">-->
+                <!--                    </video>-->
+                <!--                </div>-->
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/blender/compare-ship.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/blender/wineholder-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/blender/steamtrain-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Visual Comparisons</h3>
+            </div>
+            <div class="content has-text-justified">
+                <p>
+
+                </p>
+            </div>
+            <div class="columns is-centered">
+                <!-- Visual Effects. -->
+                <div class="column">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="column is-full-width">
+                                <div id="example1" class="bal-container-small">
+
+                                    <div class="bal-after">
+                                        <img src="img/ours/drums-ours-16.png">
+                                        <div class="bal-afterPosition afterLabel">
+                                            Ours
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-before">
+                                        <div class="bal-before-inset">
+                                            <img src="img/3d-gs/Drums-gs.png">
+                                            <div class="bal-beforePosition beforeLabel">
+                                                3D-GS [Kerbl 2023]
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-handle">
+                                        <span class=" handle-left-arrow"></span>
+                                        <span class="handle-right-arrow"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--/ Visual Effects. -->
+
+                <!-- Matting. -->
+                <div class="column">
+                    <div class="columns is-centered">
+                        <div class="column content">
+
+                            <div id="example2" class="bal-container-small">
+                                <div class="bal-after">
+                                    <img src="img/ours/Lego-ours-3.png">
+                                    <div class="bal-afterPosition afterLabel">
+                                        Ours
+                                    </div>
+                                </div>
+
+                                <div class="bal-before">
+                                    <div class="bal-before-inset">
+                                        <img src="img/scaffold/Lego-scaffold.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                            Scaffold-GS [Lu 2023]
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bal-handle">
+                                    <span class=" handle-left-arrow"></span>
+                                    <span class="handle-right-arrow"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="columns is-centered">
+                        <div class="column content">
+
+                            <div id="example4" class="bal-container-small">
+                                <div class="bal-after">
+                                    <img src="img/ours/lifestyle-ours-31.png">
+                                    <div class="bal-afterPosition afterLabel">
+                                        Ours
+                                    </div>
+                                </div>
+
+                                <div class="bal-before">
+                                    <div class="bal-before-inset">
+                                        <img src="img/gs-shader/lifestyle-gs-shader.jpeg">
+                                        <div class="bal-beforePosition beforeLabel">
+                                            GS-Shader [Jiang 2023]
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bal-handle">
+                                    <span class=" handle-left-arrow"></span>
+                                    <span class="handle-right-arrow"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Results on the Mip-360 Dataset</h3>
+            </div>
+
+            <div id="results-carousel" class="carousel results-carousel">
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/bonsai-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/counter-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/kitchen-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/treehill-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/stump-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/mip360/garden-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Visual Comparisons</h3>
+            </div>
+            <div class="content has-text-justified">
+                <p>
+
+                </p>
+            </div>
+            <div class="columns is-centered">
+                <!-- Visual Effects. -->
+                <div class="column">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="column is-full-width">
+                                <div id="example5" class="bal-container-mip360">
+
+                                    <div class="bal-after">
+                                        <img src="img/ours/bicycle-ours-0.png">
+                                        <div class="bal-afterPosition afterLabel">
+                                            Ours
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-before">
+                                        <div class="bal-before-inset">
+                                            <img src="img/3d-gs/bicycle-gs.png">
+                                            <div class="bal-beforePosition beforeLabel">
+                                                3D-GS [Kerbl 2023]
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-handle">
+                                        <span class=" handle-left-arrow"></span>
+                                        <span class="handle-right-arrow"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="columns is-centered">
+                        <div class="column content">
+
+                            <div id="example3" class="bal-container-mip360">
+                                <div class="bal-after">
+                                    <img src="img/ours/flowers-ours.png">
+                                    <div class="bal-afterPosition afterLabel">
+                                        Ours
+                                    </div>
+                                </div>
+
+                                <div class="bal-before">
+                                    <div class="bal-before-inset">
+                                        <img src="img/scaffold/flowers-scaffold.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                            Scaffold-GS [Lu 2023]
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bal-handle">
+                                    <span class=" handle-left-arrow"></span>
+                                    <span class="handle-right-arrow"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Results on our Anisotropic Synthetic Dataset</h3>
+            </div>
+
+            <div id="results-carousel" class="carousel results-carousel">
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/asg/cd-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/asg/ashtray-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/asg/dishes-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+                <div class="item item-fullbody">
+                    <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+                        <source src="video/asg/lock-compare.mp4"
+                                type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Visual Comparisons</h3>
+            </div>
+            <div class="content has-text-justified">
+                <p>
+
+                </p>
+            </div>
+            <div class="columns is-centered">
+                <!-- Visual Effects. -->
+                <div class="column">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="column is-full-width">
+                                <div id="teapot" class="bal-container-asg">
+
+                                    <div class="bal-after">
+                                        <img src="img/ours/12plane-ours-82.png">
+                                        <div class="bal-afterPosition afterLabel">
+                                            Ours
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-before">
+                                        <div class="bal-before-inset">
+                                            <img src="img/3d-gs/12plane-gs.png">
+                                            <div class="bal-beforePosition beforeLabel">
+                                                3D-GS [Kerbl 2023]
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bal-handle">
+                                        <span class=" handle-left-arrow"></span>
+                                        <span class="handle-right-arrow"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="columns is-centered">
+                        <div class="column content">
+
+                            <div id="plane12" class="bal-container-asg">
+                                <div class="bal-after">
+                                    <img src="img/ours/teapot-ours.jpeg">
+                                    <div class="bal-afterPosition afterLabel">
+                                        Ours
+                                    </div>
+                                </div>
+
+                                <div class="bal-before">
+                                    <div class="bal-before-inset">
+                                        <img src="img/scaffold/teapot-scaffold.jpeg">
+                                        <div class="bal-beforePosition beforeLabel">
+                                            Scaffold-GS [Lu 2023]
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bal-handle">
+                                    <span class=" handle-left-arrow"></span>
+                                    <span class="handle-right-arrow"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="columns is-centered">
+                        <div class="column content">
+
+                            <div id="jupyter" class="bal-container-asg">
+                                <div class="bal-after">
+                                    <img src="img/ours/jupyter-ours-41.png">
+                                    <div class="bal-afterPosition afterLabel">
+                                        Ours
+                                    </div>
+                                </div>
+
+                                <div class="bal-before">
+                                    <div class="bal-before-inset">
+                                        <img src="img/3d-gs/jupyter-gs.png">
+                                        <div class="bal-beforePosition beforeLabel">
+                                            3D-GS [Kerbl 2023]
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bal-handle">
+                                    <span class=" handle-left-arrow"></span>
+                                    <span class="handle-right-arrow"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="content has-text-justified">
+                <h3 class="title is-3 is-centered has-text-centered">Visual Comparisons on Nex Dataset</h3>
+            </div>
+
+            <div class="b-dics" style="width: 1600px; font-weight: 600;">
+                <img src="img/nex/cd-gs.png" alt="3D-GS">
+                <img src="img/nex/cd-scaffold.png" alt="Scaffold-GS">
+                <img src="img/nex/cd-ours.png" alt="Ours">
+                <img src="img/nex/cd-gt.png" alt="GT">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="content has-text-justified">
+            <h2 class="title is-3 is-centered has-text-centered">Pipeline of 3D Gaussian Stitching</h2>
+            <div class="has-text-centered">
+                <img style="width: 90%;" src="files/pipeline.png"
+                     alt="HyperNeRF architecture."/>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <!-- Abstract. -->
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+                <h2 class="title is-3">Abstract</h2>
+                <div class="content has-text-justified">
+                    <p>
+                        Using parts of existing models to rebuild new models, commonly termed as example-based modeling,
+                        is a classical methodology in the realm of computer graphics. Previous works mostly focus on
+                        shape composition, making them very hard to use for realistic composition of 3D objects captured
+                        from real-world scenes. This leads to combining multiple NeRFs into a single 3D scene to achieve
+                        seamless appearance blending.
+                        However, the current SeamlessNeRF method struggles to achieve interactive editing and harmonious
+                        stitching for real-world scenes due to its gradient-based strategy and grid-based
+                        representation.
+                        To this end, we present an example-based modeling method that combines multiple Gaussian fields
+                        in a point-based representation using sample-guided synthesis.
+                        Specifically, as for composition, we create a GUI to segment and transform multiple fields in
+                        real time, easily obtaining a semantically meaningful composition of models represented by 3D
+                        Gaussian Splatting (3DGS). For texture blending, due to the discrete and irregular nature of
+                        3DGS, straightforwardly applying gradient propagation as SeamlssNeRF is not supported. Thus, a
+                        novel sampling-based cloning method is proposed to harmonize the blending while preserving the
+                        original rich texture and content. Our workflow consists of three steps: 1) real-time
+                        segmentation and transformation of a Gaussian model using a well-tailored GUI, 2) KNN analysis
+                        to identify boundary points in the intersecting area between the source and target models, and
+                        3) two-phase optimization of the target model using sampling-based cloning and gradient
+                        constraints. Extensive experimental results validate that our approach significantly outperforms
+                        previous works in terms of realistic synthesis, demonstrating its practicality.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!--/ Abstract. -->
+
+    </div>
+</section>
+
+
+<section class="section" id="Acknowledgements">
+    <div class="container is-max-desktop content">
+        <h2 class="title">Acknowledgements</h2>
+        ZY, AC and AG are supported by the ERC Starting Grant LEGO-3D (850533) and DFG EXC number 2064/1 - project
+        number 390727645.
+        TS is supported by a Czech Science Foundation (GACR) EXPRO grant (UNI-3D, grant no. 23-07973X).
+        We also thank Christian Reiser for insightful discussions during the preparation of the draft.
+    </div>
+</section>
+
+<section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+        <h2 class="title">BibTeX</h2>
+        <pre><code>@article{gao2024seamlessgs,
+    title={Towards Realistic Example-based Modeling via 3D Gaussian Stitching},
+    author={Gao, Xinyu and Yang, Ziyi and Gong, Bingchen and Han, Xiaoguang and Yang, Sipeng and Jin, Xiaogang},
+    journal={arXiv preprint arXiv:2408.xxx},
+    year={2024}
+}</code></pre>
+    </div>
+</section>
+
+<section class="section" id="References">
+    <div class="container is-max-desktop content">
+
+        <h2 class="title">References</h2>
+        <div class="content has-text-justified">
+            <ul>
+                <li>
+                    <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/" target="_blank">3D Gaussian
+                        Splatting for Real-Time Radiance Field Rendering</a>
+                </li>
+                <li>
+                    <a href="https://city-super.github.io/scaffold-gs/" target="_blank">Scaffold-GS: Structured 3D
+                        Gaussians for View-Adaptive Rendering</a>
+                </li>
+                <li>
+                    <a href="https://asparagus15.github.io/GaussianShader.github.io/" target="_blank">GaussianShader: 3D
+                        Gaussian Splatting with Shading Functions for Reflective Surfaces</a>
+                </li>
+                <li>
+                    <a href="https://nex-mpi.github.io/" target="_blank">NeX: Real-time View Synthesis with Neural Basis
+                        Expansion</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<footer class="footer is-center">
+    <div class="container">
+        <div class="content has-text-centered">
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="content">
+                    <p>
+                        This website is licensed under a <a rel="license"
+                                                            href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                        Commons Attribution-ShareAlike 4.0 International License</a>.
+                        This webpage template is from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+                        We sincerely thank <a href="https://keunhong.com/">Keunhong Park</a> for developing and
+                        open-sourcing this template.
+                        The video comparison with sliding bar is from <a href="https://dorverbin.github.io/refnerf/">Ref-NeRF</a>.
+                        The image comparison with sliding bar is from <a
+                            href="https://research.nvidia.com/labs/dir/neuralangelo/">Neuralangelo</a>.
+                    </p>
+                </div>
+            </div>
+            <p></p>
+        </div>
+    </div>
+</footer>
+
+
+<script src="static/js/script.js"></script>
+
+<script>
+    new BeforeAfter({
+        id: '#example1'
+    });
+    new BeforeAfter({
+        id: '#example2'
+    });
+    new BeforeAfter({
+        id: '#example4'
+    });
+    new BeforeAfter({
+        id: '#example5'
+    });
+
+    new BeforeAfter({
+        id: '#example3'
+    })
+
+    // new BeforeAfter({
+    //     id: '#example6'
+    // })
+    //
+    // new BeforeAfter({
+    //     id: '#garden'
+    // })
+
+    new BeforeAfter({
+        id: '#teapot'
+    })
+
+    new BeforeAfter({
+        id: '#plane12'
+    })
+
+    new BeforeAfter({
+        id: '#jupyter'
+    })
+
+</script>
+
+</body>
+</html>
